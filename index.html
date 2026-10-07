@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NBFC Persona Pack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one full-height stage, one slide at a time, nav bar at the foot.
+   Palette: cool ledger grey, ink navy, cobalt accent, teal for "good", amber for cautions. */
+:root {
+  --bg: #edf0f4;
+  --surface: #ffffff;
+  --ink: #0e1a2b;
+  --muted: #4d5b70;
+  --line: #d3dae4;
+  --accent: #1f4fd8;
+  --accent-ink: #ffffff;
+  --accent-soft: #e3eafb;
+  --good: #0b7a6b;
+  --warn: #8a5200;
+  --warn-soft: #fbefd9;
+  --f-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --f-body: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Consolas, monospace;
+  --gutter: clamp(16px, 4vw, 56px);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a1020; --surface: #121b30; --ink: #e7ecf6; --muted: #9ba9c0; --line: #25314b;
+    --accent: #86a3ff; --accent-ink: #0a1020; --accent-soft: #1b2a52;
+    --good: #4fd1b8; --warn: #f0b35a; --warn-soft: #3a2b10;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0a1020; --surface: #121b30; --ink: #e7ecf6; --muted: #9ba9c0; --line: #25314b;
+  --accent: #86a3ff; --accent-ink: #0a1020; --accent-soft: #1b2a52;
+  --good: #4fd1b8; --warn: #f0b35a; --warn-soft: #3a2b10;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: 16px; line-height: 1.5;
+}
+[hidden] { display: none !important; }
+a { color: var(--accent); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.deck { height: 100%; display: flex; flex-direction: column; }
+
+/* top bar */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px var(--gutter) 6px; }
+.brand { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.tag { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 3px 9px; border: 1px solid var(--warn); color: var(--warn); background: var(--warn-soft); border-radius: 4px; white-space: nowrap; }
+
+/* stage */
+.stage { flex: 1; min-height: 0; overflow-y: auto; padding: 8px var(--gutter) 24px; }
+.slide { max-width: 1180px; min-height: 100%; margin-inline: auto; display: flex; flex-direction: column; justify-content: center; gap: 28px; padding-block: 12px; animation: rise 0.35s ease both; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+@media (prefers-reduced-motion: reduce) { .slide { animation: none; } }
+
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 0; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 700; line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h1 { font-size: clamp(2.2rem, 6vw, 4.4rem); max-width: 18ch; }
+h2 { font-size: clamp(1.7rem, 3.6vw, 2.8rem); max-width: 24ch; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+p { margin: 0; }
+.lede { font-size: clamp(1.05rem, 1.8vw, 1.3rem); color: var(--muted); max-width: 60ch; }
+.small { font-size: 0.9rem; color: var(--muted); }
+.mono { font-family: var(--f-mono); }
+
+/* grids and surfaces */
+.grid { display: grid; gap: 16px; }
+.g-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.g-4 { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.g-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.g-5 { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.g-6 { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 18px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card .label { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.quote { font-size: 1rem; border-left: 3px solid var(--accent); padding-left: 12px; }
+.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-weight: 500; color: var(--accent); }
+
+/* title slide */
+.names { display: flex; flex-wrap: wrap; gap: 8px 10px; padding: 0; margin: 0; list-style: none; }
+.names li { font-family: var(--f-mono); font-size: 13px; padding: 5px 10px; border: 1px solid var(--line); background: var(--surface); border-radius: 4px; }
+
+/* slide 3 */
+.fact { display: grid; grid-template-columns: 1fr; gap: 6px; border-top: 1px solid var(--line); padding-top: 14px; min-width: 0; }
+.fact h3 { color: var(--ink); }
+
+/* persona explorer */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tab { font: inherit; font-weight: 500; padding: 9px 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 4px; cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: clamp(16px, 3vw, 28px); display: grid; gap: 16px; }
+.panel h3 { font-size: 1.5rem; }
+.rows { display: grid; gap: 0; margin: 0; }
+.row { display: grid; grid-template-columns: 150px 1fr; gap: 6px 18px; padding: 11px 0; border-top: 1px solid var(--line); }
+.row dt { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.row dd { margin: 0; min-width: 0; }
+@media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
+
+/* committee */
+.step { display: flex; flex-direction: column; gap: 8px; }
+.meter { height: 6px; background: var(--accent-soft); border-radius: 3px; overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--accent); width: var(--w); }
+.role-tag { font-size: 0.85rem; color: var(--good); font-weight: 600; }
+
+/* rhythm axis */
+.axis { position: relative; height: 48px; margin: 4px 14px 0; }
+.axis::before { content: ""; position: absolute; left: 0; right: 0; top: 7px; height: 2px; background: var(--line); }
+.tick { position: absolute; top: 0; left: calc(var(--p) * 1%); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.tick b { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 3px solid var(--bg); box-shadow: 0 0 0 1px var(--accent); }
+.tick span { font-family: var(--f-mono); font-size: 12px; color: var(--ink); }
+
+/* flow list */
+.flow { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: f; }
+.flow li { counter-increment: f; display: grid; grid-template-columns: 34px 1fr; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); align-items: baseline; }
+.flow li::before { content: counter(f); font-family: var(--f-mono); color: var(--accent); font-weight: 500; }
+.flow li:first-child { border-top: 0; }
+.rail { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.rail li { padding-left: 14px; border-left: 3px solid var(--good); }
+.rail b { display: block; }
+
+/* pilot bar */
+.weeks { display: grid; grid-template-columns: 1fr 4fr 1fr; gap: 4px; }
+.weeks div { height: 46px; display: flex; align-items: center; justify-content: center; font-family: var(--f-mono); font-size: 12px; border-radius: 3px; padding-inline: 4px; text-align: center; }
+.weeks .w-a { background: var(--accent-soft); color: var(--ink); }
+.weeks .w-b { background: var(--accent); color: var(--accent-ink); }
+
+.list { margin: 0; padding-left: 1.1rem; display: grid; gap: 6px; }
+
+/* nav */
+.nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px var(--gutter) 14px; border-top: 1px solid var(--line); background: var(--bg); }
+.btn { font: inherit; font-weight: 600; padding: 9px 16px; border-radius: 4px; border: 1px solid var(--ink); background: var(--ink); color: var(--bg); cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn[disabled] { opacity: 0.4; cursor: default; }
+.dots { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.dot { width: 10px; height: 10px; padding: 0; border-radius: 50%; border: 1px solid var(--muted); background: transparent; cursor: pointer; }
+.dot[aria-current="true"] { background: var(--accent); border-color: var(--accent); }
+.count { font-family: var(--f-mono); font-size: 12px; color: var(--muted); min-width: 56px; text-align: center; }
+@media (max-width: 560px) { .dots { display: none; } .nav { justify-content: space-between; } }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+  <header class="bar">
+    <span class="brand"><span data-agency>RevGen IQ</span> / NBFC persona pack</span>
+    <span class="tag">Sample for discussion</span>
+  </header>
+
+  <main class="stage" id="stage">
+
+    <!-- 1 Title -->
+    <section class="slide" data-title="Title">
+      <p class="eyebrow">Outreach persona pack · 7 Oct 2026</p>
+      <h1>Reaching CFOs at four large Indian NBFCs</h1>
+      <p class="lede"><span data-client>Elite EPM</span> x NBFC CFOs. A sample of how we choose targets and what we say to them, before any message is sent.</p>
+      <ul class="names" aria-label="Target accounts">
+        <li>Bajaj Finance</li><li>Shriram Finance</li><li>Cholamandalam Investment &amp; Finance</li><li>Tata Capital</li>
+      </ul>
+      <p class="small">Prepared by <span data-agency>RevGen IQ</span></p>
+    </section>
+
+    <!-- 2 Proposal -->
+    <section class="slide" data-title="Proposal">
+      <p class="eyebrow">The proposal</p>
+      <h2>A 6-week pilot across four named accounts</h2>
+      <div class="grid g-3">
+        <div class="card">
+          <span class="label">The pilot</span>
+          <p>Persona-led outreach on LinkedIn, WhatsApp and email to CFOs and finance heads at four large Indian NBFCs.</p>
+        </div>
+        <div class="card">
+          <span class="label">This pack, first deliverable</span>
+          <p>Four CFO personas, the wider buying committee, and sample sequences for each. It is a sample, built from public information.</p>
+        </div>
+        <div class="card">
+          <span class="label">What we need from <span data-client>Elite EPM</span></span>
+          <ul class="list">
+            <li>Approval of messaging</li>
+            <li>One named reference story</li>
+            <li>A meeting-booking route into the India sales team</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 Why now -->
+    <section class="slide" data-title="Why now">
+      <p class="eyebrow">Why large NBFCs fit now</p>
+      <h2><span data-client>Elite EPM</span> is investing in India, and NBFCs have the planning problems its platform is built for</h2>
+      <div class="grid g-2">
+        <div class="fact">
+          <h3>Local momentum</h3>
+          <p>Largest office worldwide in Gurugram: <span class="num">42,000 sq ft</span>, room for <span class="num">500</span> staff. Data centers in India give regulated lenders local data residency.</p>
+        </div>
+        <div class="fact">
+          <h3>A lending reference already exists</h3>
+          <p>Hero FinCorp is named among India customers, so NBFC buyers can be told a peer already uses it.</p>
+        </div>
+        <div class="fact">
+          <h3>Product fit</h3>
+          <p>Consolidation, scenario planning and rolling forecasts, with an LLM paired to a deterministic calculation engine for auditable answers. RBI, auditors and rating agencies all read an NBFC's numbers.</p>
+        </div>
+        <div class="fact">
+          <h3>Buyer pressure</h3>
+          <p>Large NBFCs plan across many branches, products and funding lines under RBI scale-based regulation. Which planning tools each uses today is not yet verified, and confirming it is step one of the pilot.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 Personas overview -->
+    <section class="slide" data-title="Personas">
+      <p class="eyebrow">Four CFO personas</p>
+      <h2>Each CFO gets a different hook</h2>
+      <div class="grid g-4">
+        <div class="card">
+          <span class="label">The growth governor</span>
+          <h3>Bajaj Finance</h3>
+          <p class="small">Planning pain: profitability and margin by product and customer.</p>
+          <p class="quote">"Plan the ROA tree by product, and re-run it in minutes when credit cost or funding cost moves."</p>
+        </div>
+        <div class="card">
+          <span class="label">The ground-level realist</span>
+          <h3>Shriram Finance</h3>
+          <p class="small">Planning pain: branch and region planning, cost-of-funds and spread scenarios.</p>
+          <p class="quote">"Stress-test the book against a freight or monsoon shock, by region, before the quarter starts."</p>
+        </div>
+        <div class="card">
+          <span class="label">The compounder</span>
+          <h3>Cholamandalam</h3>
+          <p class="small">Planning pain: cohort and vintage planning, branch productivity.</p>
+          <p class="quote">"Keep planning as steady as your returns, while new products scale."</p>
+        </div>
+        <div class="card">
+          <span class="label">The institution builder</span>
+          <h3>Tata Capital</h3>
+          <p class="small">Planning pain: multi-entity consolidation, segment-level capital allocation.</p>
+          <p class="quote">"One governed view across entities and segments, with an audit trail for every number."</p>
+        </div>
+      </div>
+      <p class="small">Personas are archetypes built from each company's public positioning, not profiles of the actual CFOs.</p>
+    </section>
+
+    <!-- 5 Persona explorer -->
+    <section class="slide" data-title="Persona detail">
+      <p class="eyebrow">Persona detail</p>
+      <h2>What each CFO cares about, and how we answer</h2>
+      <div class="tabs" role="tablist" aria-label="Choose a persona" id="tabs"></div>
+      <div class="panel" id="panel" role="tabpanel"></div>
+    </section>
+
+    <!-- 6 Committee -->
+    <section class="slide" data-title="Buying committee">
+      <p class="eyebrow">Who else to reach, and in what order</p>
+      <h2>Start where the pain is felt, finish with the CFO</h2>
+      <div class="grid g-6" id="committee"></div>
+      <p class="small">The CFO signs off, but the first conversation is usually with the person who feels the pain. We bring the CFO in through a referral or a short, sharp note.</p>
+    </section>
+
+    <!-- 7 Rhythm -->
+    <section class="slide" data-title="Outreach rhythm">
+      <p class="eyebrow">Outreach rhythm</p>
+      <h2>Five touches in 14 days, across three channels</h2>
+      <div class="axis" aria-hidden="true">
+        <div class="tick" style="--p:0"><b></b><span>D1</span></div>
+        <div class="tick" style="--p:15.4"><b></b><span>D3</span></div>
+        <div class="tick" style="--p:38.5"><b></b><span>D6</span></div>
+        <div class="tick" style="--p:61.5"><b></b><span>D9</span></div>
+        <div class="tick" style="--p:100"><b></b><span>D14</span></div>
+      </div>
+      <div class="grid g-5">
+        <div class="card"><span class="label">Day 1 · LinkedIn</span><p>Connection note, no pitch.</p></div>
+        <div class="card"><span class="label">Day 3 · Email</span><p>One planning insight, one question.</p></div>
+        <div class="card"><span class="label">Day 6 · LinkedIn</span><p>Short follow-up with a relevant resource.</p></div>
+        <div class="card"><span class="label">Day 9 · WhatsApp</span><p>Only where the contact has agreed to be messaged there.</p></div>
+        <div class="card"><span class="label">Day 14 · Email</span><p>Polite close-out, with an offer to hand over to a colleague.</p></div>
+      </div>
+      <div class="card">
+        <span class="label">Sample Day 1 note, Bajaj Finance</span>
+        <p class="quote">"Hi [Name], I follow how large lenders plan profitability by product. Would value connecting."</p>
+        <p class="small">Every message is a draft for <span data-client>Elite EPM</span> to approve. Bracketed fields are filled from verified public data.</p>
+      </div>
+    </section>
+
+    <!-- 8 Automation -->
+    <section class="slide" data-title="Automation and guardrails">
+      <p class="eyebrow">How it runs</p>
+      <h2>Automation does the repetitive work, people review every reply</h2>
+      <div class="grid g-2">
+        <div class="card">
+          <span class="label">n8n workflow</span>
+          <ol class="flow">
+            <li>Build the target list from public company and professional data, tagged by persona.</li>
+            <li>Check each contact against a suppression list.</li>
+            <li>Personalise approved templates with verified fields only.</li>
+            <li>Schedule touches within daily send limits.</li>
+            <li>Detect replies, classify them, and alert a human.</li>
+            <li>Hand qualified leads to <span data-client>Elite EPM</span> with the conversation history.</li>
+            <li>Report weekly on sends, replies and meetings booked.</li>
+          </ol>
+        </div>
+        <div class="card">
+          <span class="label">Guardrails we state up front</span>
+          <ul class="rail">
+            <li><b>LinkedIn</b>Its user agreement restricts bots and scraping, so volume stays low, tooling is approved, and a human sends where required.</li>
+            <li><b>WhatsApp</b>Business messaging needs opt-in and approved templates, so cold WhatsApp is used only after a prior reply or consent.</li>
+            <li><b>Data protection</b>Only what B2B outreach needs, a clear opt-out on every message, deletion requests honoured, in line with India's Digital Personal Data Protection Act, 2023. Counsel confirms the final approach.</li>
+            <li><b>Brand safety</b>All copy is approved by <span data-client>Elite EPM</span>, and nothing claims a relationship or customer result that is not verified.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 Pilot -->
+    <section class="slide" data-title="Pilot plan">
+      <p class="eyebrow">Pilot plan</p>
+      <h2>Six weeks, agreed measures, a clear decision at the end</h2>
+      <div class="weeks" aria-hidden="true">
+        <div class="w-a">Wk 1</div><div class="w-b">Weeks 2 to 5</div><div class="w-a">Wk 6</div>
+      </div>
+      <div class="grid g-3">
+        <div class="card"><span class="label">Week 1</span><p><span data-client>Elite EPM</span> approves personas, copy and guardrails. We confirm contacts and current planning tools per account.</p></div>
+        <div class="card"><span class="label">Weeks 2 to 5</span><p>Five-touch sequence for up to six contacts per account, <span class="num">24</span> in total, with replies reviewed daily.</p></div>
+        <div class="card"><span class="label">Week 6</span><p>Report results and recommend whether to extend to other NBFCs, banks and insurers.</p></div>
+      </div>
+      <div class="card">
+        <span class="label">Proposed success measures</span>
+        <ul class="list">
+          <li>At least <span class="num">3</span> qualified meetings booked across at least <span class="num">2</span> of the <span class="num">4</span> accounts.</li>
+          <li>Weekly report on connections accepted, replies, positive replies and meetings.</li>
+          <li>Zero complaints or platform restrictions.</li>
+        </ul>
+        <p class="small">These are proposed targets to agree with <span data-client>Elite EPM</span>, not industry benchmarks. Commercial terms: to be agreed.</p>
+      </div>
+    </section>
+
+    <!-- 10 Next -->
+    <section class="slide" data-title="Next steps">
+      <p class="eyebrow">Next step</p>
+      <h2>A 20-minute walkthrough with your team</h2>
+      <p class="lede">We would use that time to hear where these personas match what you see, and where they miss.</p>
+      <div class="card">
+        <span class="label">Sources, opened 7 Oct 2026</span>
+        <ul class="list">
+          <li><a href="https://www.anaplan.com/" target="_blank" rel="noopener">Vendor website</a></li>
+          <li><a href="https://www.crnasia.com/india/news/2026/anaplan-expands-india-role-with-multi-million-dollar-apac-investment" target="_blank" rel="noopener">CRN Asia on the India and APAC expansion</a></li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="nav" aria-label="Slides">
+    <button class="btn ghost" id="prev" type="button">Back</button>
+    <div class="dots" id="dots"></div>
+    <span class="count" id="count" aria-live="polite"></span>
+    <button class="btn" id="next" type="button">Next</button>
+  </nav>
+</div>
+
+<script>
+/* Edit these two names to re-brand the whole deck. */
+var CONFIG = { client: 'Elite EPM', agency: 'RevGen IQ' };
+
+(function () {
+  document.querySelectorAll('[data-client]').forEach(function (el) { el.textContent = CONFIG.client; });
+  document.querySelectorAll('[data-agency]').forEach(function (el) { el.textContent = CONFIG.agency; });
+  var C = CONFIG.client;
+
+  var PERSONAS = [
+    { tab: 'Bajaj Finance', name: 'Bajaj Finance: the growth governor',
+      mindset: 'Scale through data and cross-sell, never by loosening underwriting. Thinks in unit economics per customer and product.',
+      pain: 'Profitability and margin by product and customer, driver-based forecasts across fast-moving lines.',
+      hook: 'Plan the ROA tree by product, and re-run it in minutes when credit cost or funding cost moves.',
+      when: 'Results are announced, or guidance on credit cost or opex shifts.',
+      obj: 'We build this in-house.', reply: C + ' sits above in-house systems; prove it on one product line.',
+      tone: 'Crisp, numbers first, no hype.' },
+    { tab: 'Shriram Finance', name: 'Shriram Finance: the ground-level realist',
+      mindset: 'Credit is judged on field reality: freight cycles, used-vehicle prices, collections by geography.',
+      pain: 'Branch and region planning, and cost-of-funds and spread scenarios in a cyclical book.',
+      hook: 'Stress-test the book against a freight or monsoon shock, by region, before the quarter starts.',
+      when: 'Funding costs or ratings change, or a cycle turns.',
+      obj: 'Branches won’t use another tool.', reply: 'Start with HQ and regional heads only; keep inputs simple.',
+      tone: 'Plain-spoken, practical, short.' },
+    { tab: 'Cholamandalam', name: 'Cholamandalam Investment & Finance: the compounder',
+      mindset: 'Consistent returns over drama. Branch-led, group-reputation aware, cautious on change.',
+      pain: 'Cohort and vintage planning, branch productivity, protecting ROA while adding new segments.',
+      hook: 'Keep planning as steady as your returns, while new products scale.',
+      when: 'A new segment launches or the annual plan cycle opens.',
+      obj: 'Why change what works?', reply: 'Low-disruption rollout, and a lending peer already using ' + C + ' (Hero FinCorp).',
+      tone: 'Measured, respectful, evidence-led.' },
+    { tab: 'Tata Capital', name: 'Tata Capital: the institution builder',
+      mindset: 'Breadth with governance. Allocates capital across retail, SME, corporate and wealth, and integrates acquired businesses.',
+      pain: 'Multi-entity consolidation, segment-level capital allocation, tracking synergy after mergers.',
+      hook: 'One governed view across entities and segments, with an audit trail for every number.',
+      when: 'Reporting deadlines near, or after a merger or integration step.',
+      obj: 'Group IT and procurement take long.', reply: 'Pilot on a single entity, with governance documents ready.',
+      tone: 'Polished, process-aware, formal.' }
+  ];
+
+  var COMMITTEE = [
+    { role: 'Head of FP&A / planning', cares: 'Month-end speed, forecast accuracy, spreadsheet risk', deal: 'Day-to-day champion' },
+    { role: 'Head of treasury / ALM', cares: 'Funding mix, liquidity, rate scenarios', deal: 'Technical evaluator' },
+    { role: 'Head of financial reporting / controller', cares: 'Consolidation, close, audit trail', deal: 'Governance check' },
+    { role: 'Chief risk officer', cares: 'Credit cost scenarios, stress tests', deal: 'Influencer' },
+    { role: 'CIO / head of data', cares: 'Integration, security, data residency', deal: 'Gatekeeper' },
+    { role: 'CFO', cares: 'ROA/ROE, capital allocation, regulatory comfort', deal: 'Final sponsor' }
+  ];
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  /* committee cards */
+  var cm = document.getElementById('committee');
+  COMMITTEE.forEach(function (c, i) {
+    var card = el('div', 'card step');
+    card.appendChild(el('span', 'label', 'Order ' + (i + 1) + ' of ' + COMMITTEE.length));
+    var m = el('div', 'meter'); var bar = el('i'); bar.style.setProperty('--w', ((i + 1) / COMMITTEE.length * 100) + '%'); m.appendChild(bar);
+    card.appendChild(m);
+    card.appendChild(el('h3', null, c.role));
+    card.appendChild(el('p', 'small', c.cares));
+    card.appendChild(el('p', 'role-tag', c.deal));
+    cm.appendChild(card);
+  });
+
+  /* persona explorer */
+  var tabs = document.getElementById('tabs');
+  var panel = document.getElementById('panel');
+  var tabEls = [];
+  function renderPersona(i) {
+    var p = PERSONAS[i];
+    tabEls.forEach(function (t, j) { t.setAttribute('aria-selected', j === i ? 'true' : 'false'); t.tabIndex = j === i ? 0 : -1; });
+    panel.textContent = '';
+    panel.appendChild(el('h3', null, p.name));
+    var dl = el('dl', 'rows');
+    function row(k, v) { var r = el('div', 'row'); r.appendChild(el('dt', null, k)); r.appendChild(el('dd', null, v)); dl.appendChild(r); }
+    row('Mindset', p.mindset);
+    row('Planning pain', p.pain);
+    row('Hook', '“' + p.hook + '”');
+    row('Reach out when', p.when);
+    row('Objection', '“' + p.obj + '” Reply: ' + p.reply);
+    row('Tone', p.tone);
+    panel.appendChild(dl);
+  }
+  PERSONAS.forEach(function (p, i) {
+    var b = el('button', 'tab', p.tab);
+    b.type = 'button'; b.setAttribute('role', 'tab');
+    b.addEventListener('click', function () { renderPersona(i); });
+    b.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        var n = (i + (e.key === 'ArrowRight' ? 1 : PERSONAS.length - 1)) % PERSONAS.length;
+        renderPersona(n); tabEls[n].focus(); e.preventDefault(); e.stopPropagation();
+      }
+    });
+    tabs.appendChild(b); tabEls.push(b);
+  });
+  renderPersona(0);
+
+  /* slide navigation */
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var stage = document.getElementById('stage');
+  var dots = document.getElementById('dots');
+  var count = document.getElementById('count');
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var dotEls = [];
+  var cur = 0;
+
+  slides.forEach(function (s, i) {
+    var d = el('button', 'dot'); d.type = 'button';
+    d.setAttribute('aria-label', 'Go to slide ' + (i + 1) + ': ' + (s.getAttribute('data-title') || ''));
+    d.addEventListener('click', function () { show(i); });
+    dots.appendChild(d); dotEls.push(d);
+  });
+
+  function show(i) {
+    cur = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function (s, j) { s.hidden = j !== cur; });
+    dotEls.forEach(function (d, j) { d.setAttribute('aria-current', j === cur ? 'true' : 'false'); });
+    count.textContent = (cur + 1) + ' / ' + slides.length;
+    prev.disabled = cur === 0; next.disabled = cur === slides.length - 1;
+    stage.scrollTop = 0;
+    try { history.replaceState(null, '', '#s' + (cur + 1)); } catch (e) { /* hash is optional */ }
+  }
+  prev.addEventListener('click', function () { show(cur - 1); });
+  next.addEventListener('click', function () { show(cur + 1); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.target && e.target.closest && e.target.closest('[role="tablist"]')) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { show(cur + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(cur - 1); }
+    else if (e.key === 'Home') { show(0); }
+    else if (e.key === 'End') { show(slides.length - 1); }
+  });
+
+  var sx = 0, sy = 0;
+  stage.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+  stage.addEventListener('touchend', function (e) {
+    var dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 60 && Math.abs(dy) < 40) { show(cur + (dx < 0 ? 1 : -1)); }
+  }, { passive: true });
+
+  var m = /^#s(\d+)$/.exec(location.hash || '');
+  show(m ? parseInt(m[1], 10) - 1 : 0);
+})();
+</script>
+
+</body>
+</html>
